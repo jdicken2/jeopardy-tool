@@ -133,12 +133,11 @@ export default class BoardMaker extends React.PureComponent {
     _renderTabs(selectedTab) {
         let rv = [];
 
-        for (let i = 1; i <= 2; i++) {
+        let i = 1;
+
+        for (; i <= 2; i++) {
             rv.push(
-                <Board index={i-1} value={selectedTab}>
-                    {/* <Typography variant="h2" component="h2" gutterBottom>
-                        {i === 2 ? 'Double Jeopardy' : 'Jeopardy'}
-                    </Typography> */}
+                <Board index={i - 1} value={selectedTab}>
                     <CategoryContainer>
                         {this._renderCategories(i)}
                     </CategoryContainer>
@@ -147,10 +146,7 @@ export default class BoardMaker extends React.PureComponent {
         }
 
         rv.push(
-            <Board index={2} value={selectedTab}>
-                {/* <Typography variant="h2" component="h2" gutterBottom>
-                    Final Jeopardy
-                </Typography> */}
+            <Board index={i - 1} value={selectedTab}>
                 <BoardColumn>
                     <FinalQuestionRow>
                         <TextField
