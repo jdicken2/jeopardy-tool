@@ -56,6 +56,7 @@ const rules = {
     'react/jsx-fragments': [ 'error', 'element'],
     'react/jsx-pascal-case': [ 'error' ],
     'react/jsx-wrap-multilines': [ 'error' ],
+    'react/prop-types': [ 'off' ],
 };
 
 const plugins = [
