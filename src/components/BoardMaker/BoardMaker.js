@@ -180,7 +180,7 @@ export default class BoardMaker extends React.PureComponent {
                     New Game
                 </Typography>
                 <StyledForm noValidate autoComplete="off">
-                    <StyledAppBar position="static">
+                    <StyledAppBar position="sticky">
                         <Tabs value={tab} onChange={this._handleTabChange} variant="fullWidth" centered>
                             <Tab label="Jeopardy" />
                             <Tab label="Double Jeopardy" />
