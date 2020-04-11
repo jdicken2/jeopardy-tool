@@ -1,15 +1,3 @@
-import React from 'react';
+import App from './App';
 
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div>
-                Hello Jeopardy World!
-            </div>
-        );
-    }
-}
+export default App;

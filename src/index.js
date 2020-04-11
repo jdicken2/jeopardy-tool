@@ -2,13 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './components/App';
-
-const rootElement = document.getElementById('root');
+import { BrowserRouter } from 'react-router-dom';
 
 // Render the UI
 ReactDOM.render(
-    <React.Fragment>
-        <App/>
-    </React.Fragment>,
-    rootElement
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>,
+    document.getElementById('root')
 );
