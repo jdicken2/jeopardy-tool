@@ -3,11 +3,10 @@ import styled from 'styled-components';
 
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Paper from '@material-ui/core/Paper';
 
 import Board from './Board';
 
@@ -24,19 +23,7 @@ const CategoryTextField = styled(TextField)`
     }
 `;
 
-const QuestionOptions = styled.div`
-    display: inline-grid;
-    grid-gap: ${spacing};
-`;
-
 const QuestionRow = styled.div`
-    display: grid;
-
-    grid-gap: ${spacing};
-    grid-template-columns: 1.5fr 1.5fr 1fr;
-`;
-
-const FinalQuestionRow = styled.div`
     display: grid;
 
     grid-gap: ${spacing};
@@ -53,6 +40,10 @@ const CategoryContainer = styled.div`
     display: grid;
 
     grid-gap: ${spacing};
+`;
+
+const StyledPaper = styled(Paper)`
+    padding: ${spacing};
 `;
 
 const StyledForm = styled.form``;
@@ -94,16 +85,6 @@ export default class BoardMaker extends React.PureComponent {
                         rows="2"
                         variant="outlined"
                     />
-                    <QuestionOptions>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    name="daily-double"
-                                />
-                            }
-                            label="Daily Double"
-                        />
-                    </QuestionOptions>
                 </QuestionRow>
             );
         }
@@ -116,14 +97,19 @@ export default class BoardMaker extends React.PureComponent {
 
         for (let i = 1; i <= 5; i++) {
             rv.push(
-                <BoardColumn key={i}>
-                    <CategoryTextField
-                        id={`category-${i}`}
-                        label={`Category ${i}`}
-                        fullWidth
-                    />
-                    {this._renderRows(multiplier)}
-                </BoardColumn>
+                <StyledPaper>
+                    <BoardColumn key={i}>
+                        <CategoryTextField
+                            id={`category-${i}`}
+                            label={`Category ${i}`}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                        {this._renderRows(multiplier)}
+                    </BoardColumn>
+                </StyledPaper>
             );
         }
 
@@ -148,7 +134,7 @@ export default class BoardMaker extends React.PureComponent {
         rv.push(
             <Board index={i - 1} value={selectedTab}>
                 <BoardColumn>
-                    <FinalQuestionRow>
+                    <QuestionRow>
                         <TextField
                             id="final-question"
                             label="Final Clue"
@@ -163,7 +149,7 @@ export default class BoardMaker extends React.PureComponent {
                             rows="4"
                             variant="outlined"
                         />
-                    </FinalQuestionRow>
+                    </QuestionRow>
                 </BoardColumn>
             </Board>
         );

@@ -9,6 +9,12 @@ export default function App() {
     const theme = createMuiTheme({
         palette: {
             type: 'dark',
+            primary: {
+                main: '#1976d2',
+            },
+            secondary: {
+                main: '#ff6f00',
+            },
         },
     });
 
