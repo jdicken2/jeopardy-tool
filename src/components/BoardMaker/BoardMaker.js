@@ -6,80 +6,171 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-const StyledTextField = styled(TextField)``;
+const spacing = '1.5rem';
 
-const QuestionOptions = styled.div`
-    display: inline-grid;
-    grid-gap: 2rem;
-`;
-
-const QuestionRow = styled.div`
-    ${StyledTextField}:not(:last-child) {
-        margin-right: 2rem;
+const CategoryTextField = styled(TextField)`
+    &, label, input, div {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
     }
 `;
 
-const BoardColumn = styled.div``;
+const QuestionOptions = styled.div`
+    display: inline-grid;
+    grid-gap: ${spacing};
+`;
 
-const StyledForm = styled.form``;
+const QuestionRow = styled.div`
+    display: grid;
 
-export default function BoardMaker() {
-    return (
-        <React.Fragment>
-            <Typography variant="h1" component="h1">
-                Create New Game
-            </Typography>
-            <Typography variant="h2" component="h2" gutterBottom>
-                Board 1
-            </Typography>
-            <StyledForm noValidate autoComplete="off">
-                <BoardColumn>
-                    <StyledTextField
-                        id="category-1"
-                        style={{ marginBottom: '2rem' }}
-                        label="Category 1"
-                        fullWidth 
-                        rows="4"
+    grid-gap: ${spacing};
+    grid-template-columns: 1.5fr 1.5fr 1fr;
+`;
+
+const FinalQuestionRow = styled.div`
+    display: grid;
+
+    grid-gap: ${spacing};
+    grid-template-columns: 1fr 1fr;
+`;
+
+const BoardColumn = styled.div`
+    display: grid;
+
+    grid-gap: ${spacing};
+`;
+
+const CategoryContainer = styled.div`
+    display: grid;
+
+    grid-gap: ${spacing};
+`;
+
+const Board = styled.div``;
+
+const StyledForm = styled.form`
+    display: grid;
+
+    grid-gap: ${spacing};
+`;
+
+export default class BoardMaker extends React.PureComponent {
+    _renderRows(multiplier = 1) {
+        let rv = [];
+
+        for (let i = 1; i <= 5; i++) {
+            const points = i * 200 * multiplier;
+
+            rv.push(
+                <QuestionRow key={i}>
+                    <TextField
+                        id={`question-${i}`}
+                        label={`${points} Point Clue`}
+                        multiline 
+                        rows="2"
+                        variant="outlined"
                     />
-                    <QuestionRow>
-                        <StyledTextField
-                            id="question-1"
-                            label="Clue 1"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                        <StyledTextField
-                            id="answer-1"
-                            label="Answer 1"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                        <QuestionOptions>
-                            <div>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="daily-double"
-                                        />
-                                    }
-                                    label="Daily Double"
+                    <TextField
+                        id={`answer-${i}`}
+                        label={`${points} Point Answer`}
+                        multiline 
+                        rows="2"
+                        variant="outlined"
+                    />
+                    <QuestionOptions>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="daily-double"
                                 />
-                            </div>
-                            <div>
-                                <StyledTextField
-                                    id="points"
-                                    type="number"
-                                    label="Points"
-                                    value="100"
-                                    variant="outlined"
-                            />
-                            </div>
-                        </QuestionOptions>
-                    </QuestionRow>
+                            }
+                            label="Daily Double"
+                        />
+                    </QuestionOptions>
+                </QuestionRow>
+            );
+        }
+
+        return rv;
+    }
+
+    _renderCategories(multiplier = 1) {
+        let rv = [];
+
+        for (let i = 1; i <= 5; i++) {
+            rv.push(
+                <BoardColumn key={i}>
+                    <CategoryTextField
+                        id={`category-${i}`}
+                        label={`Category ${i}`}
+                        fullWidth
+                    />
+                    {this._renderRows(multiplier)}
                 </BoardColumn>
-            </StyledForm>
-        </React.Fragment>
-    );
+            );
+        }
+
+        return rv;
+    }
+
+    _renderBoards() {
+        let rv = [];
+
+        for (let i = 1; i <= 2; i++) {
+            rv.push(
+                <Board>
+                    <Typography variant="h2" component="h2" gutterBottom>
+                        {i === 2 ? 'Double Jeopardy' : 'Jeopardy'}
+                    </Typography>
+                    <CategoryContainer>
+                        {this._renderCategories(i)}
+                    </CategoryContainer>
+                </Board>
+            );
+        }
+
+        return rv;
+    }
+
+    _renderFinalJeopardy() {
+        return (
+            <React.Fragment>
+                <Typography variant="h2" component="h2" gutterBottom>
+                    Final Jeopardy
+                </Typography>
+                <BoardColumn>
+                    <FinalQuestionRow>
+                        <TextField
+                            id="final-question"
+                            label="Final Clue"
+                            multiline 
+                            rows="4"
+                            variant="outlined"
+                        />
+                        <TextField
+                            id="final-answer"
+                            label="Final Answer"
+                            multiline 
+                            rows="4"
+                            variant="outlined"
+                        />
+                    </FinalQuestionRow>
+                </BoardColumn>
+            </React.Fragment>
+        );
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <Typography variant="h1" component="h1">
+                    New Game
+                </Typography>
+                <StyledForm noValidate autoComplete="off">
+                    {this._renderBoards()}
+                    {this._renderFinalJeopardy()}
+                </StyledForm>
+            </React.Fragment>
+        );
+    }
 }
