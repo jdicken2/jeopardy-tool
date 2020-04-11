@@ -5,8 +5,17 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
+import Board from './Board';
 
 const spacing = '1.5rem';
+
+const StyledAppBar = styled(AppBar)`
+    margin-bottom: ${spacing};
+`;
 
 const CategoryTextField = styled(TextField)`
     &, label, input, div {
@@ -46,15 +55,23 @@ const CategoryContainer = styled.div`
     grid-gap: ${spacing};
 `;
 
-const Board = styled.div``;
-
-const StyledForm = styled.form`
-    display: grid;
-
-    grid-gap: ${spacing};
-`;
+const StyledForm = styled.form``;
 
 export default class BoardMaker extends React.PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tab: 0,
+        };
+    }
+
+    _handleTabChange = (event, newValue) => {
+        this.setState({
+            tab: newValue,
+        });
+    }
+
     _renderRows(multiplier = 1) {
         let rv = [];
 
@@ -113,15 +130,15 @@ export default class BoardMaker extends React.PureComponent {
         return rv;
     }
 
-    _renderBoards() {
+    _renderTabs(selectedTab) {
         let rv = [];
 
         for (let i = 1; i <= 2; i++) {
             rv.push(
-                <Board>
-                    <Typography variant="h2" component="h2" gutterBottom>
+                <Board index={i-1} value={selectedTab}>
+                    {/* <Typography variant="h2" component="h2" gutterBottom>
                         {i === 2 ? 'Double Jeopardy' : 'Jeopardy'}
-                    </Typography>
+                    </Typography> */}
                     <CategoryContainer>
                         {this._renderCategories(i)}
                     </CategoryContainer>
@@ -129,15 +146,11 @@ export default class BoardMaker extends React.PureComponent {
             );
         }
 
-        return rv;
-    }
-
-    _renderFinalJeopardy() {
-        return (
-            <React.Fragment>
-                <Typography variant="h2" component="h2" gutterBottom>
+        rv.push(
+            <Board index={2} value={selectedTab}>
+                {/* <Typography variant="h2" component="h2" gutterBottom>
                     Final Jeopardy
-                </Typography>
+                </Typography> */}
                 <BoardColumn>
                     <FinalQuestionRow>
                         <TextField
@@ -156,19 +169,29 @@ export default class BoardMaker extends React.PureComponent {
                         />
                     </FinalQuestionRow>
                 </BoardColumn>
-            </React.Fragment>
+            </Board>
         );
+
+        return rv;
     }
 
     render() {
+        const { tab } = this.state;
+
         return (
             <React.Fragment>
                 <Typography variant="h1" component="h1">
                     New Game
                 </Typography>
                 <StyledForm noValidate autoComplete="off">
-                    {this._renderBoards()}
-                    {this._renderFinalJeopardy()}
+                    <StyledAppBar position="static">
+                        <Tabs value={tab} onChange={this._handleTabChange} variant="fullWidth" centered>
+                            <Tab label="Jeopardy" />
+                            <Tab label="Double Jeopardy" />
+                            <Tab label="Final Jeopardy" />
+                        </Tabs>
+                    </StyledAppBar>
+                    {this._renderTabs(tab)}
                 </StyledForm>
             </React.Fragment>
         );
