@@ -14,3 +14,4 @@ export default class Board extends React.PureComponent {
         );
     }
 }
+//example
