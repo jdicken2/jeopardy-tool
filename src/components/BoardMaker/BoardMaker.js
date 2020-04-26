@@ -1,180 +1,90 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepButton from '@material-ui/core/StepButton';
 
-import Board from './Board';
-
-const spacing = '1.5rem';
-
-const StyledAppBar = styled(AppBar)`
-    margin-bottom: ${spacing};
-`;
-
-const CategoryTextField = styled(TextField)`
-    &, label, input, div {
-        font-size: 1.4rem;
-        line-height: 1.4rem;
-    }
-`;
-
-const QuestionRow = styled.div`
-    display: grid;
-
-    grid-gap: ${spacing};
-    grid-template-columns: 1fr 1fr;
-`;
-
-const BoardColumn = styled.div`
-    display: grid;
-
-    grid-gap: ${spacing};
-`;
-
-const CategoryContainer = styled.div`
-    display: grid;
-
-    grid-gap: ${spacing};
-`;
-
-const StyledPaper = styled(Paper)`
-    padding: ${spacing};
-`;
-
-const StyledForm = styled.form``;
+import QuestionsForm from './QuestionsForm';
 
 export default class BoardMaker extends React.PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            tab: 0,
+            activeTab: 0,
+            activeStep: 0,
         };
     }
 
     _handleTabChange = (event, newValue) => {
         this.setState({
-            tab: newValue,
+            activeTab: newValue,
         });
     }
 
-    _renderRows(multiplier = 1) {
-        let rv = [];
-
-        for (let i = 1; i <= 5; i++) {
-            const points = i * 200 * multiplier;
-
-            rv.push(
-                <QuestionRow key={i}>
-                    <TextField
-                        id={`question-${i}`}
-                        label={`${points} Point Clue`}
-                        multiline 
-                        rows="2"
-                        variant="outlined"
-                    />
-                    <TextField
-                        id={`answer-${i}`}
-                        label={`${points} Point Answer`}
-                        multiline 
-                        rows="2"
-                        variant="outlined"
-                    />
-                </QuestionRow>
-            );
-        }
-
-        return rv;
+    _getSteps() {
+        return [
+            'Create Boards',
+            'Pick Daily Doubles',
+            'Save and Complete',
+        ];
     }
 
-    _renderCategories(multiplier = 1) {
-        let rv = [];
-
-        for (let i = 1; i <= 5; i++) {
-            rv.push(
-                <StyledPaper>
-                    <BoardColumn key={i}>
-                        <CategoryTextField
-                            id={`category-${i}`}
-                            label={`Category ${i}`}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                        {this._renderRows(multiplier)}
-                    </BoardColumn>
-                </StyledPaper>
-            );
-        }
-
-        return rv;
+    _setActiveStep(step) {
+        this.setState({
+            activeStep: step,
+        });
     }
 
-    _renderTabs(selectedTab) {
-        let rv = [];
+    _handleStep = (step) => {
+        this._setActiveStep(step);
+    }
 
-        let i = 1;
-
-        for (; i <= 2; i++) {
-            rv.push(
-                <Board index={i - 1} value={selectedTab}>
-                    <CategoryContainer>
-                        {this._renderCategories(i)}
-                    </CategoryContainer>
-                </Board>
-            );
+    _renderStep(activeStep, activeTab) {
+        switch (activeStep) {
+            case 0:
+                return (
+                    <QuestionsForm
+                        onTabChange={this._handleTabChange}
+                        activeTab={activeTab}
+                    />
+                );
+            case 1:
+                return (
+                    <span>Coming Soon!</span>
+                );
+            case 2:
+                return (
+                    <span>Coming Soon!</span>
+                );
+            default:
+                return (
+                    <span>Error, invalid step</span>
+                );
         }
-
-        rv.push(
-            <Board index={i - 1} value={selectedTab}>
-                <BoardColumn>
-                    <QuestionRow>
-                        <TextField
-                            id="final-question"
-                            label="Final Clue"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                        <TextField
-                            id="final-answer"
-                            label="Final Answer"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                    </QuestionRow>
-                </BoardColumn>
-            </Board>
-        );
-
-        return rv;
     }
 
     render() {
-        const { tab } = this.state;
+        const { activeTab, activeStep, } = this.state;
+
+        console.log(activeStep);
 
         return (
             <React.Fragment>
                 <Typography variant="h1" component="h1">
                     New Game
                 </Typography>
-                <StyledForm noValidate autoComplete="off">
-                    <StyledAppBar position="sticky">
-                        <Tabs value={tab} onChange={this._handleTabChange} variant="fullWidth" centered>
-                            <Tab label="Jeopardy" />
-                            <Tab label="Double Jeopardy" />
-                            <Tab label="Final Jeopardy" />
-                        </Tabs>
-                    </StyledAppBar>
-                    {this._renderTabs(tab)}
-                </StyledForm>
+                <Stepper alternativeLabel nonLinear activeStep={activeStep}>
+                    {this._getSteps().map((label, index) => (
+                        <Step key={label}>
+                            <StepButton onClick={() => this._handleStep(index)}>
+                                {label}
+                            </StepButton>
+                        </Step>
+                    ))}
+                </Stepper>
+                {this._renderStep(activeStep, activeTab)}
             </React.Fragment>
         );
     }
