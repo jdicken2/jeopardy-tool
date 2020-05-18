@@ -24,5 +24,4 @@ export default function App() {
             <Main />
         </ThemeProvider>
     );
-    //God left me unfinished 
 }
