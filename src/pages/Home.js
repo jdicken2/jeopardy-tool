@@ -3,19 +3,18 @@ import { Link } from 'react-router-dom';
 export default function Home() {
     return (
         <div>
-           <center> Welcome to the Hello Jeopardy Tool! </center>
-           <center>Here is the   <Link to="/Create"> link </Link>to the Creation Tool: </center>
-
+           <h1><center> Welcome to the Hello Jeopardy Tool! </center></h1>
+           <h2><center>You can checkout the Creation Tool <Link to="/Create"> Here </Link> </center></h2>
            <div>
-                <h2> Here are some features: </h2>
+                <h3> Here are some features: </h3>
                 <ul>
-                    <li>The user can create up to five categories with up to 200 point and 1000 point clues for Single Jeopardy</li>
-                    <li>The user can create up to five categories with up to 400 point and 2000 point clues for Double Jeopardy</li>
-                    <li>The user can create a Final Jeopardy</li>
+                    <li>The user can create up to five categories with up to 200 point and 1000 point clues for Single Jeopardy.</li>
+                    <li>The user can create up to five categories with up to 400 point and 2000 point clues for Double Jeopardy.</li>
+                    <li>The user can create a Final Jeopardy.</li>
                 </ul>
             </div>
             <div>
-                <h2>Coming Soon:</h2>
+                <h3>Coming Soon:</h3>
                 <ul>
                     <li>A Create Button to Launch Your Jeopardy Game!</li>
                 </ul>      
