@@ -126,24 +126,26 @@ export default class QuestionsForm extends React.PureComponent {
 
         rv.push(
             <Board index={i - 1} value={activeTab}>
-                <BoardColumn>
-                    <QuestionRow>
-                        <TextField
-                            id="final-question"
-                            label="Final Clue"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                        <TextField
-                            id="final-answer"
-                            label="Final Answer"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                    </QuestionRow>
-                </BoardColumn>
+                <StyledPaper>
+                    <BoardColumn>
+                        <QuestionRow>
+                            <TextField
+                                id="final-question"
+                                label="Final Clue"
+                                multiline 
+                                rows="4"
+                                variant="outlined"
+                            />
+                            <TextField
+                                id="final-answer"
+                                label="Final Answer"
+                                multiline 
+                                rows="4"
+                                variant="outlined"
+                            />
+                        </QuestionRow>
+                    </BoardColumn>
+                </StyledPaper>
             </Board>
         );
 
