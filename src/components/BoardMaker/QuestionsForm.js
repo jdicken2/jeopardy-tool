@@ -86,7 +86,7 @@ export default class QuestionsForm extends React.PureComponent {
     _renderCategories(multiplier = 1) {
         let rv = [];
 
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 6; i++) {
             rv.push(
                 <StyledPaper>
                     <BoardColumn key={i}>
