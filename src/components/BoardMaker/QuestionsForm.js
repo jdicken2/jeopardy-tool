@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
@@ -49,16 +50,72 @@ const StyledForm = styled.form``;
 
 const ColumnHeader = styled.div``;
 
+const boardPropType = PropTypes.arrayOf(
+    PropTypes.shape({
+        category: PropTypes.string.isRequired,
+        questions: PropTypes.arrayOf(
+            PropTypes.shape({
+                clue: PropTypes.string.isRequired,
+                answer: PropTypes.string.isRequired,
+                dailyDouble: PropTypes.bool.isRequired,
+            }).isRequired,
+        ).isRequired,
+    }).isRequired,
+);
+
+const createDefaultBoard = () => (
+    Array(6).fill({
+        category: '',
+        questions: Array(5).fill({
+            clue: '',
+            answer: '',
+            dailyDouble: false,
+        }),
+    })
+);
+
 export default class QuestionsForm extends React.PureComponent {
-    constructor(props) {
-        super(props);
+    static propTypes = {
+        initialGame: PropTypes.shape({
+            jeopardy: boardPropType,
+            doubleJeopardy: boardPropType,
+            finalJeopardy: PropTypes.shape({
+                clue: PropTypes.string.isRequired,
+                answer: PropTypes.string.isRequired,
+            }),
+        }),
     }
 
-    _renderRows(multiplier = 1) {
+    static defaultProps = {
+        initialGame: {
+            jeopardy: createDefaultBoard(),
+            doubleJeopardy: createDefaultBoard(),
+            finalJeopardy: {
+                clue: '',
+                answer: '',
+            },
+        },
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            game: props.initialGame,
+            activeTab: 0,
+        };
+    }
+
+    _getValueKeyForTab(tabIndex) {
+        return ['jeopardy', 'doubleJeopardy', 'finalJeopardy'][tabIndex];
+    }
+
+    _renderRows(tabIndex, questions) {
+        const multiplier = tabIndex + 1;
         let rv = [];
 
-        for (let i = 1; i <= 5; i++) {
-            const points = i * 200 * multiplier;
+        for (let i = 0; i < 5; i++) {
+            const points = (i + 1) * 200 * multiplier;
 
             rv.push(
                 <QuestionRow key={i}>
@@ -68,6 +125,8 @@ export default class QuestionsForm extends React.PureComponent {
                         multiline 
                         rows="2"
                         variant="outlined"
+                        value={questions[i].clue}
+                        onChange={(event) => console.log(event.currentTarget.value)}
                     />
                     <TextField
                         id={`answer-${i}`}
@@ -75,6 +134,7 @@ export default class QuestionsForm extends React.PureComponent {
                         multiline 
                         rows="2"
                         variant="outlined"
+                        value={questions[i].answer}
                     />
                 </QuestionRow>
             );
@@ -83,24 +143,28 @@ export default class QuestionsForm extends React.PureComponent {
         return rv;
     }
 
-    _renderCategories(multiplier = 1) {
+    _renderCategories(tabIndex) {
         let rv = [];
+        const boardValue = this.state.game[this._getValueKeyForTab(tabIndex)];
 
-        for (let i = 1; i <= 6; i++) {
+        for (let i = 0; i < 6; i++) {
+            const categoryValue = boardValue[i];
+
             rv.push(
-                <StyledPaper>
-                    <BoardColumn key={i}>
+                <StyledPaper key={i}>
+                    <BoardColumn>
                         <ColumnHeader>
                             <CategoryTextField
                                 id={`category-${i}`}
-                                label={`Category ${i}`}
+                                label={`Category ${i + 1}`}
+                                value={categoryValue.category}
                                 fullWidth
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                             />
                         </ColumnHeader>
-                        {this._renderRows(multiplier)}
+                        {this._renderRows(tabIndex, categoryValue.questions)}
                     </BoardColumn>
                 </StyledPaper>
             );
@@ -112,11 +176,11 @@ export default class QuestionsForm extends React.PureComponent {
     _renderTabs(activeTab) {
         let rv = [];
 
-        let i = 1;
+        let i = 0;
 
-        for (; i <= 2; i++) {
+        for (; i < 2; i++) {
             rv.push(
-                <Board index={i - 1} value={activeTab}>
+                <Board key={i} index={i} value={activeTab}>
                     <CategoryContainer>
                         {this._renderCategories(i)}
                     </CategoryContainer>
@@ -124,8 +188,10 @@ export default class QuestionsForm extends React.PureComponent {
             );
         }
 
+        const finalJeopardyValue = this.state.game[this._getValueKeyForTab(i)];
+
         rv.push(
-            <Board index={i - 1} value={activeTab}>
+            <Board key={i} index={i} value={activeTab}>
                 <StyledPaper>
                     <BoardColumn>
                         <QuestionRow>
@@ -135,6 +201,7 @@ export default class QuestionsForm extends React.PureComponent {
                                 multiline 
                                 rows="4"
                                 variant="outlined"
+                                value={finalJeopardyValue.clue}
                             />
                             <TextField
                                 id="final-answer"
@@ -142,6 +209,7 @@ export default class QuestionsForm extends React.PureComponent {
                                 multiline 
                                 rows="4"
                                 variant="outlined"
+                                value={finalJeopardyValue.answer}
                             />
                         </QuestionRow>
                     </BoardColumn>
@@ -152,15 +220,21 @@ export default class QuestionsForm extends React.PureComponent {
         return rv;
     }
 
+    _handleTabChange = (event, newValue) => {
+        this.setState({
+            activeTab: newValue,
+        });
+    }
+
     render() {
-        const { activeTab, onTabChange, } = this.props;
+        const { activeTab } = this.state;
 
         return (
             <StyledForm noValidate autoComplete="off">
                 <StyledAppBar position="sticky">
                     <Tabs
                         value={activeTab}
-                        onChange={onTabChange}
+                        onChange={this._handleTabChange}
                         variant="fullWidth"
                         centered
                     >

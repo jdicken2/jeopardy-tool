@@ -12,15 +12,8 @@ export default class BoardMaker extends React.PureComponent {
         super(props);
 
         this.state = {
-            activeTab: 0,
             activeStep: 0,
         };
-    }
-
-    _handleTabChange = (event, newValue) => {
-        this.setState({
-            activeTab: newValue,
-        });
     }
 
     _getSteps() {
@@ -45,10 +38,7 @@ export default class BoardMaker extends React.PureComponent {
         switch (activeStep) {
             case 0:
                 return (
-                    <QuestionsForm
-                        onTabChange={this._handleTabChange}
-                        activeTab={activeTab}
-                    />
+                    <QuestionsForm/>
                 );
             case 1:
                 return (
@@ -66,7 +56,7 @@ export default class BoardMaker extends React.PureComponent {
     }
 
     render() {
-        const { activeTab, activeStep, } = this.state;
+        const { activeStep, } = this.state;
 
         console.log(activeStep);
 
@@ -84,7 +74,7 @@ export default class BoardMaker extends React.PureComponent {
                         </Step>
                     ))}
                 </Stepper>
-                {this._renderStep(activeStep, activeTab)}
+                {this._renderStep(activeStep)}
             </React.Fragment>
         );
     }
