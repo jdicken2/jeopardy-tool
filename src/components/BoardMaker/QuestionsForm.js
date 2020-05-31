@@ -64,17 +64,17 @@ const boardPropType = PropTypes.arrayOf(
 );
 
 const createDefaultBoard = () => (
-    Array(6).fill({
+    Array(6).fill(0).map(() => ({
         category: '',
-        questions: Array(5).fill({
+        questions: Array(5).fill(0).map(() => ({
             clue: '',
             answer: '',
             dailyDouble: false,
-        }),
-    })
+        })),
+    }))
 );
 
-export default class QuestionsForm extends React.PureComponent {
+export default class QuestionsForm extends React.Component {
     static propTypes = {
         initialGame: PropTypes.shape({
             jeopardy: boardPropType,
@@ -109,9 +109,29 @@ export default class QuestionsForm extends React.PureComponent {
     _getValueKeyForTab(tabIndex) {
         return ['jeopardy', 'doubleJeopardy', 'finalJeopardy'][tabIndex];
     }
+    
+    _handleQuestionRowTextChange({
+        event,
+        valueKey,
+        questionIndex,
+        categoryIndex,
+        type,
+    }) {
+        const { value } = event.currentTarget;
 
-    _renderRows(tabIndex, questions) {
-        const multiplier = tabIndex + 1;
+        this.setState((currentState) => {
+            currentState.game[valueKey][categoryIndex].questions[questionIndex][type] = value;
+
+            return currentState;
+        });
+    }
+
+    _renderRows({
+        multiplier,
+        valueKey,
+        questions,
+        categoryIndex,
+    }) {
         let rv = [];
 
         for (let i = 0; i < 5; i++) {
@@ -126,7 +146,15 @@ export default class QuestionsForm extends React.PureComponent {
                         rows="2"
                         variant="outlined"
                         value={questions[i].clue}
-                        onChange={(event) => console.log(event.currentTarget.value)}
+                        onChange={(event) => {
+                            this._handleQuestionRowTextChange({
+                                event,
+                                valueKey,
+                                categoryIndex,
+                                questionIndex: i,
+                                type: 'clue',
+                            });
+                        }}
                     />
                     <TextField
                         id={`answer-${i}`}
@@ -145,7 +173,8 @@ export default class QuestionsForm extends React.PureComponent {
 
     _renderCategories(tabIndex) {
         let rv = [];
-        const boardValue = this.state.game[this._getValueKeyForTab(tabIndex)];
+        const valueKey = this._getValueKeyForTab(tabIndex);
+        const boardValue = this.state.game[valueKey];
 
         for (let i = 0; i < 6; i++) {
             const categoryValue = boardValue[i];
@@ -164,7 +193,12 @@ export default class QuestionsForm extends React.PureComponent {
                                 }}
                             />
                         </ColumnHeader>
-                        {this._renderRows(tabIndex, categoryValue.questions)}
+                        {this._renderRows({
+                            multiplier: tabIndex + 1,
+                            valueKey,
+                            categoryIndex: i,
+                            questions: categoryValue.questions,
+                        })}
                     </BoardColumn>
                 </StyledPaper>
             );
