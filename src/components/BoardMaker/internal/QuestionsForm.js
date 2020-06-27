@@ -8,7 +8,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 
-import Board from './Board';
+import Board from '../Board';
+
+import QuestionRow from './QuestionRow';
 
 const spacing = '1.5rem';
 
@@ -23,7 +25,7 @@ const CategoryTextField = styled(TextField)`
     }
 `;
 
-const QuestionRow = styled.div`
+const QuestionRowContainer = styled.div`
     display: grid;
 
     grid-gap: ${spacing};
@@ -110,14 +112,18 @@ export default class QuestionsForm extends React.Component {
         return ['jeopardy', 'doubleJeopardy', 'finalJeopardy'][tabIndex];
     }
     
-    _handleQuestionRowTextChange({
-        event,
-        valueKey,
-        questionIndex,
-        categoryIndex,
-        type,
-    }) {
-        const { value } = event.currentTarget;
+    _handleQuestionRowTextChange = (event) => {
+        const {
+            value,
+            type,
+            name,
+        } = event.currentTarget;
+
+        const [
+            valueKey,
+            categoryIndex,
+            questionIndex,
+        ] = name.split(':');
 
         this.setState((currentState) => {
             currentState.game[valueKey][categoryIndex].questions[questionIndex][type] = value;
@@ -138,33 +144,17 @@ export default class QuestionsForm extends React.Component {
             const points = (i + 1) * 200 * multiplier;
 
             rv.push(
-                <QuestionRow key={i}>
-                    <TextField
-                        id={`question-${i}`}
-                        label={`${points.toLocaleString()} Point Clue`}
-                        multiline 
-                        rows="2"
-                        variant="outlined"
-                        value={questions[i].clue}
-                        onChange={(event) => {
-                            this._handleQuestionRowTextChange({
-                                event,
-                                valueKey,
-                                categoryIndex,
-                                questionIndex: i,
-                                type: 'clue',
-                            });
-                        }}
+                <QuestionRowContainer key={i}>
+                    <QuestionRow
+                        name={`${valueKey}:${categoryIndex}:${i}`}
+                        clue={questions[i].clue}
+                        answer={questions[i].answer}
+                        dailyDouble={questions[i].dailyDouble}
+                        points={points}
+                        spacing={spacing}
+                        onChange={this._handleQuestionRowTextChange}
                     />
-                    <TextField
-                        id={`answer-${i}`}
-                        label={`${points.toLocaleString()} Point Answer`}
-                        multiline 
-                        rows="2"
-                        variant="outlined"
-                        value={questions[i].answer}
-                    />
-                </QuestionRow>
+                </QuestionRowContainer>
             );
         }
 
@@ -190,6 +180,15 @@ export default class QuestionsForm extends React.Component {
                                 fullWidth
                                 InputLabelProps={{
                                     shrink: true,
+                                }}
+                                onChange={(event) => {
+                                    const { value } = event.currentTarget;
+
+                                    this.setState((currentState) => {
+                                        currentState.game[valueKey][i].category = value;
+
+                                        return currentState;
+                                    });
                                 }}
                             />
                         </ColumnHeader>
@@ -228,7 +227,7 @@ export default class QuestionsForm extends React.Component {
             <Board key={i} index={i} value={activeTab}>
                 <StyledPaper>
                     <BoardColumn>
-                        <QuestionRow>
+                        <QuestionRowContainer>
                             <TextField
                                 id="final-question"
                                 label="Final Clue"
@@ -236,6 +235,15 @@ export default class QuestionsForm extends React.Component {
                                 rows="4"
                                 variant="outlined"
                                 value={finalJeopardyValue.clue}
+                                onChange={(event) => {
+                                    const { value } = event.currentTarget;
+
+                                    this.setState((currentState) => {
+                                        currentState.game.finalJeopardy.clue = value;
+
+                                        return currentState;
+                                    });
+                                }}
                             />
                             <TextField
                                 id="final-answer"
@@ -244,8 +252,17 @@ export default class QuestionsForm extends React.Component {
                                 rows="4"
                                 variant="outlined"
                                 value={finalJeopardyValue.answer}
+                                onChange={(event) => {
+                                    const { value } = event.currentTarget;
+
+                                    this.setState((currentState) => {
+                                        currentState.game.finalJeopardy.answer = value;
+
+                                        return currentState;
+                                    });
+                                }}
                             />
-                        </QuestionRow>
+                        </QuestionRowContainer>
                     </BoardColumn>
                 </StyledPaper>
             </Board>

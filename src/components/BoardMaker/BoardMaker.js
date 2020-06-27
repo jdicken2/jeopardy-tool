@@ -5,7 +5,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepButton from '@material-ui/core/StepButton';
 
-import QuestionsForm from './QuestionsForm';
+import QuestionsForm from './internal/QuestionsForm';
 
 export default class BoardMaker extends React.PureComponent {
     constructor(props) {
