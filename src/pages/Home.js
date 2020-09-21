@@ -27,7 +27,7 @@ export default function Home() {
                             <li>Your Name Here #2</li>
                             <li>Your Name Here #3</li>
                         </ul>
-                    <p>Here is a link to the Github Reposiory: <a href="https://github.com/jdicken2/jeopardy-tool">Github</a></p>
+                    <p>Here is a link to the Github Reposiory: <a href="https://github.com/jake-freeman/jeopardy-tool">Github</a></p>
                     <p>Contact Information: example@gmail.com</p>
                     <p>Copyright: &copy; The Chat</p>
                 </footer>

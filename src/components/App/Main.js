@@ -16,6 +16,9 @@ export default function Main() {
             <Route path="/create">
                 <Create />
             </Route>
+            {/* <Route path="/board">
+                <Board />
+            </Route> */}
         </Switch>
     );
 }

@@ -6,6 +6,7 @@ import Step from '@material-ui/core/Step';
 import StepButton from '@material-ui/core/StepButton';
 
 import QuestionsForm from './internal/QuestionsForm';
+import DailyDoubles from './internal/DailyDoubles';
 
 export default class BoardMaker extends React.PureComponent {
     constructor(props) {
@@ -42,7 +43,7 @@ export default class BoardMaker extends React.PureComponent {
                 );
             case 1:
                 return (
-                    <span>Coming Soon!</span>
+                    <span><DailyDoubles/></span>
                 );
             case 2:
                 return (
@@ -53,34 +54,6 @@ export default class BoardMaker extends React.PureComponent {
                     <span>Error, invalid step</span>
                 );
         }
-
-        rv.push(
-            <Board index={i - 1} value={selectedTab}>
-                <BoardColumn>
-                    <QuestionRow>
-                        <TextField
-                            id="final-question"
-                            label="Final Clue"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                        <TextField
-                            id="final-answer"
-                            label="Final Answer"
-                            multiline 
-                            rows="4"
-                            variant="outlined"
-                        />
-                    </QuestionRow>
-                </BoardColumn>
-            <center>
-               <button type="button"> Create Board </button> 
-            </center>
-            </Board>
-        );
-
-        return rv;
     }
 
     render() {
