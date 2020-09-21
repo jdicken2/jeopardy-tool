@@ -15,7 +15,7 @@ module.exports = {
         // HtmlWebpackPlugin automatically builds the index.html file, with all
         // the bundles included as script tags
         new HtmlWebpackPlugin({
-            title: 'pong',
+            title: 'jeopardy-tool',
             template: path.resolve(__dirname, 'src/index.html'),
         })
     ],
