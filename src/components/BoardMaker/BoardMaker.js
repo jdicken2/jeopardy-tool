@@ -151,6 +151,9 @@ export default class BoardMaker extends React.PureComponent {
                         />
                     </QuestionRow>
                 </BoardColumn>
+            <center>
+               <button type="button"> Create Board </button> 
+            </center>
             </Board>
         );
 
